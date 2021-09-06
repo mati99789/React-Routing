@@ -2,9 +2,8 @@ import React, {useEffect, useState} from 'react';
 import fetchData from '../api/prismic';
 import {useHistory, Redirect} from 'react-router-dom';
 
-const Input = () => {
+const Input = ({footballDivision, setFootballDivision}) => {
 	const [options, setOptions] = useState([<option key="nothing" value=""></option>]);
-	const [footballDivision, setFootballDivision] = useState({division: ''});
 	const history = useHistory();
 
 	const handleChange = (e) => {

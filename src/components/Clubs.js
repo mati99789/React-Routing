@@ -1,22 +1,27 @@
 import React, {useEffect, useState} from 'react';
 import fetchData from '../api/prismic';
-import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
-
+import {HashRouter as Router, Route, useParams} from 'react-router-dom';
 import Input from './Input';
 import ClubDetail from './ClubDetail';
-import NotFound from './NotFound';
 import Pagination from './Pagination';
 import Post from './Post';
 
+
 const Clubs = () => {
 	const [doc, setDocData] = useState([]);
+	const [footballDivision, setFootballDivision] = useState({division: ''});
 
 	useEffect(() => (
 		fetchData('post')
-			.then((response) => (
-				setDocData([...response.results])
-			))
-	), [setDocData]);
+			.then((response) => {
+				const filteredCategory = response.results.filter((post) => {
+					if (footballDivision.division ? post.data.division.uid === footballDivision.division : true) {
+						return post;
+					}
+				});
+				setDocData([...filteredCategory]);
+			})
+	), [setDocData, footballDivision.division]);
 
 	return (
 		<Router>
@@ -25,7 +30,7 @@ const Clubs = () => {
 			</header>
 			<section>
 				<Route>
-					<Input/>
+					<Input footballDivision={footballDivision} setFootballDivision={setFootballDivision}/>
 				</Route>
 				<Route path="/category,:category?/:page">
 					<Pagination>
@@ -35,12 +40,6 @@ const Clubs = () => {
 				<Route path="/club/:clubName">
 					<ClubDetail doc={doc}/>
 				</Route>
-				{/*<Route path="/404.html">*/}
-				{/*	<NotFound/>*/}
-				{/*</Route>*/}
-				{/*<Route>*/}
-				{/*	<Redirect to="/404.html"/>*/}
-				{/*</Route>*/}
 			</section>
 		</Router>
 	);

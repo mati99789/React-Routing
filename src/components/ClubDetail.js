@@ -4,16 +4,19 @@ import {useParams, useHistory} from 'react-router-dom';
 const ClubDetail = ({doc}) => {
 	const {clubName} = useParams();
 	const history = useHistory();
-	const selectedClub = doc.filter((item) => {
+
+	const selectedClub = doc.find((item) => {
 		return item.uid === clubName;
 	});
 
-	const clubTitle = selectedClub[0].data.club_name[0].text;
+	const {data} = selectedClub;
+
+	const clubTitle = data.club_name[0].text;
 	const clubLogo = {
-		photo: selectedClub[0].data.logo_type.url,
-		altText: selectedClub[0].data.logo_type.alt
+		photo: data.logo_type.url,
+		altText: data.logo_type.alt
 	};
-	const clubDivision = selectedClub[0].data.category_name.uid;
+	const clubDivision = data.division.uid;
 
 	const handleBackClick = () => {
 		history.goBack();
